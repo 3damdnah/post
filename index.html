@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post Message</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+form {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+}
+
+button {
+    padding: 10px 15px;
+}
+
+#messages {
+    margin-top: 20px;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Post a Message</h1>
+    <form id="messageForm">
+        <textarea id="messageInput" rows="4" placeholder="Enter your message" required></textarea>
+        <button type="submit">Post Message</button>
+    </form>
+    <div id="messages"></div>
+
+    <script>
+        document.getElementById('messageForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Prevent the default form submission
+
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value;
+
+    // Send the POST request to the serverless function
+    const response = await fetch('/.netlify/functions/postMessage', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+    });
+
+    const result = await response.json();
+    displayMessage(result.data);
+    messageInput.value = ''; // Clear the input field
+});
+
+const displayMessage = (message) => {
+    const messagesDiv = document.getElementById('messages');
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    messagesDiv.appendChild(messageElement);
+};
+
+    </script>
+</body>
+</html>
